@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Differential Equation Solver with Plot</title>
+    <title>Differential Equation Solver</title>
 
     <!-- Include Plotly library -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
@@ -18,24 +18,34 @@
             display: block;
         }
     </style>
+    
 </head>
 <body>
 
-    <h1>Differential Equation Solver with Plot</h1>
+    <h1>First Order Differential Equation Solver</h1>
 
-    <label for="equation">Differential Equation (e.g., y' = -0.1y):</label>
-    <input type="text" id="equation" value="-0.1 * y">
-
-    <label for="initialCondition">Initial Condition (e.g., y(0) = 1):</label>
-    <input type="text" id="initialCondition" value="1">
-
-    <label for="stepSize">Step Size:</label>
-    <input type="number" id="stepSize" value="0.1">
-
-    <label for="numSteps">Number of Steps:</label>
-    <input type="number" id="numSteps" value="100">
-
-    <button onclick="solveAndPlot()">Solve and Plot</button>
+    <table align="center" width="75%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td><label for="equation">Differential Equation (e.g., y' = -0.1y):</label></td>
+            <td><input type="text" id="equation" value="-0.1 * y"></td>
+        </tr>
+        <tr>
+            <td><label for="initialCondition">Initial Condition (e.g., y(0) = 1):</label></td>
+            <td><input type="text" id="initialCondition" value="1"></td>
+        </tr>
+        <tr>
+            <td><label for="stepSize">Step Size:</label></td>
+            <td><input type="number" id="stepSize" value="0.001"></td>
+        </tr>
+        <tr>
+            <td><label for="numSteps">Number of Steps:</label></td> 
+            <td><input type="number" id="numSteps" value="10000"></td>
+        </tr>
+        <tr>
+            <td><button onclick="solveAndPlot()">Solve and Plot</button></td>
+        </tr>
+    </table>
+    
 
     <!-- Plotly plot container -->
     <div id="plot"></div>
@@ -83,7 +93,94 @@
             };
 
             const layout = {
-                title: 'Differential Equation Solution',
+                title: 'First Order Differential Equation Solution',
+                xaxis: { title: 't' },
+                yaxis: { title: 'y' }
+            };
+
+            Plotly.newPlot(plotContainer, [trace], layout);
+        }
+    </script>
+
+    <h1>Second Order Differential Equation Solver</h1>
+    <table align="center" width="75%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td><label for="equationA">Differential Equation (e.g., y'' = -2y' - y):</label></td>
+            <td><input type="text" id="equationA" value="-2*yp - y"></td>
+        </tr>
+        <tr>
+            <td><label for="initialCondition1">Initial Condition (e.g., y(0) = 1):</label></td>
+            <td><input type="text" id="initialCondition1" value="1"></td>
+        </tr>
+        <tr>
+            <td><label for="initialCondition2">Initial Condition (e.g., yp(0) = 0):</label></td>
+            <td><input type="text" id="initialCondition2" value="0"></td>
+        </tr>
+        <tr>
+            <td><label for="stepSizeA">Step Size:</label></td>
+            <td><input type="number" id="stepSizeA" value="0.001"></td>
+        </tr>
+        <tr>
+            <td><label for="numStepsA">Number of Steps:</label></td>
+            <td><input type="number" id="numStepsA" value="10000"></td>
+        </tr>
+        <tr>
+            <td><button onclick="solveAndPlot2()">Solve and Plot</button></td>
+    </table>
+
+    <!-- Plotly plot container -->
+    <div id="plot2"></div>
+
+    <script>
+        function solveAndPlot2() {
+            // Get input values
+            const equation = document.getElementById('equationA').value;
+            const initialCondition1 = parseFloat(document.getElementById('initialCondition1').value);
+            const initialCondition2 = parseFloat(document.getElementById('initialCondition2').value);
+            const stepSize = parseFloat(document.getElementById('stepSizeA').value);
+            const numSteps = parseInt(document.getElementById('numStepsA').value);
+
+            // Parse the equation
+            const ode = new Function('y', 'yp', 't', `return ${equation};`);
+
+            // Solve the differential equation using the Runge-Kutta method
+            const tValues = [];
+            const yValues = [];
+            const ypValues = [];
+
+            let t = 0;
+            let y = initialCondition1;
+            let yp = initialCondition2;
+
+            for (let i = 0; i <= numSteps; i++) {
+                tValues.push(t);
+                yValues.push(y);
+                ypValues.push(yp);
+                
+                const k1 = stepSize * ode(y, yp, t);
+                const k2 = stepSize * ode(y + stepSize * yp / 2, yp + k1 / 2, t + stepSize / 2);
+                const k3 = stepSize * ode(y + stepSize * yp / 2, yp + k2 / 2, t + stepSize / 2);
+                const k4 = stepSize * ode(y + stepSize * yp, yp + k3, t + stepSize);
+                
+                y = y + yp*stepSize;
+                yp = yp + (k1 + 2 * k2 + 2 * k3 + k4) / 6;
+
+                t += stepSize;
+            }
+
+            // Plot the result using Plotly
+            const plotContainer = document.getElementById('plot2');
+
+            const trace = {
+                x: tValues,
+                y: yValues,
+                type: 'scatter',
+                mode: 'lines',
+                name: 'Solution'
+            };
+
+            const layout = {
+                title: 'Second Order Differential Equation Solution',
                 xaxis: { title: 't' },
                 yaxis: { title: 'y' }
             };
