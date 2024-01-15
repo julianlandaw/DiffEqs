@@ -1,9 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Start your development with Steller landing page.">
+    <meta name="author" content="Devcrud">
     <title>Differential Equation Solver</title>
+    <!-- font icons -->
+    <link rel="stylesheet" href="assets/vendors/themify-icons/css/themify-icons.css">
+    <!-- Bootstrap + Steller main styles -->
+	<link rel="stylesheet" href="assets/css/steller.css">
+    <style>body {background-image: url('assets/imgs/background.jpeg'); background-size: 100% 100%; background-repeat: no-repeat; background-attachment: fixed; background-position: center}</style>
 
     <!-- Include Plotly library -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
@@ -21,87 +28,110 @@
     
 </head>
 <body>
+    <!-- Page navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" data-spy="affix" data-offset-top="0">
+        <div class="container">
+            <a class="navbar-brand" href="#"><img src="assets/imgs/chaos.jpeg" alt=""></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-    <h1>First Order Differential Equation Solver</h1>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#firstorder">DiffEq1</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#secondorder">DiffEq2</a>
+                    </li>
+                </ul>
+            </div>
+        </div>          
+    </nav>
+    <!-- End of page navigation -->
+    
+    <section id="firstorder" class="section mt-3">
+        <h1>First Order Differential Equation Solver</h1>
 
-    <table align="center" width="75%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-            <td><label for="equation">Differential Equation (e.g., y' = -0.1y):</label></td>
-            <td><input type="text" id="equation" value="-0.1 * y"></td>
-        </tr>
-        <tr>
-            <td><label for="initialCondition">Initial Condition (e.g., y(0) = 1):</label></td>
-            <td><input type="text" id="initialCondition" value="1"></td>
-        </tr>
-        <tr>
-            <td><label for="stepSize">Step Size:</label></td>
-            <td><input type="number" id="stepSize" value="0.001"></td>
-        </tr>
-        <tr>
-            <td><label for="numSteps">Number of Steps:</label></td> 
-            <td><input type="number" id="numSteps" value="10000"></td>
-        </tr>
-        <tr>
-            <td><button onclick="solveAndPlot()">Solve and Plot</button></td>
-        </tr>
-    </table>
+        <table align="center" width="75%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td><label for="equation">Differential Equation (e.g., y' = -0.1y):</label></td>
+                <td><input type="text" id="equation" value="-0.1 * y"></td>
+            </tr>
+            <tr>
+                <td><label for="initialCondition">Initial Condition (e.g., y(0) = 1):</label></td>
+                <td><input type="text" id="initialCondition" value="1"></td>
+            </tr>
+            <tr>
+                <td><label for="stepSize">Step Size:</label></td>
+                <td><input type="number" id="stepSize" value="0.001"></td>
+            </tr>
+            <tr>
+                <td><label for="numSteps">Number of Steps:</label></td> 
+                <td><input type="number" id="numSteps" value="10000"></td>
+            </tr>
+             <tr>
+                <td><button onclick="solveAndPlot()">Solve and Plot</button></td>
+            </tr>
+        </table>
     
 
     <!-- Plotly plot container -->
-    <div id="plot"></div>
+        <div id="plot"></div>
 
-    <script>
-        function solveAndPlot() {
-            // Get input values
-            const equation = document.getElementById('equation').value;
-            const initialCondition = parseFloat(document.getElementById('initialCondition').value);
-            const stepSize = parseFloat(document.getElementById('stepSize').value);
-            const numSteps = parseInt(document.getElementById('numSteps').value);
+        <script>
+            function solveAndPlot() {
+                // Get input values
+                const equation = document.getElementById('equation').value;
+                const initialCondition = parseFloat(document.getElementById('initialCondition').value);
+                const stepSize = parseFloat(document.getElementById('stepSize').value);
+                const numSteps = parseInt(document.getElementById('numSteps').value);
 
-            // Parse the equation
-            const ode = new Function('y', 't', `return ${equation};`);
+                // Parse the equation
+                const ode = new Function('y', 't', `return ${equation};`);
 
-            // Solve the differential equation using the Runge-Kutta method
-            const tValues = [];
-            const yValues = [];
+                // Solve the differential equation using the Runge-Kutta method
+                const tValues = [];
+                const yValues = [];
 
-            let t = 0;
-            let y = initialCondition;
+                let t = 0;
+                let y = initialCondition;
 
-            for (let i = 0; i <= numSteps; i++) {
-                tValues.push(t);
-                yValues.push(y);
+                for (let i = 0; i <= numSteps; i++) {
+                    tValues.push(t);
+                    yValues.push(y);
 
-                const k1 = stepSize * ode(y, t);
-                const k2 = stepSize * ode(y + k1 / 2, t + stepSize / 2);
-                const k3 = stepSize * ode(y + k2 / 2, t + stepSize / 2);
-                const k4 = stepSize * ode(y + k3, t + stepSize);
+                    const k1 = stepSize * ode(y, t);
+                    const k2 = stepSize * ode(y + k1 / 2, t + stepSize / 2);
+                    const k3 = stepSize * ode(y + k2 / 2, t + stepSize / 2);
+                    const k4 = stepSize * ode(y + k3, t + stepSize);
 
-                y = y + (k1 + 2 * k2 + 2 * k3 + k4) / 6;
-                t += stepSize;
+                    y = y + (k1 + 2 * k2 + 2 * k3 + k4) / 6;
+                    t += stepSize;
+                }
+
+                // Plot the result using Plotly
+                const plotContainer = document.getElementById('plot');
+
+                const trace = {
+                    x: tValues,
+                    y: yValues,
+                    type: 'scatter',
+                    mode: 'lines',
+                    name: 'Solution'
+                };
+
+                const layout = {
+                    title: 'First Order Differential Equation Solution',
+                    xaxis: { title: 't' },
+                    yaxis: { title: 'y' }
+                };
+
+                Plotly.newPlot(plotContainer, [trace], layout);
             }
-
-            // Plot the result using Plotly
-            const plotContainer = document.getElementById('plot');
-
-            const trace = {
-                x: tValues,
-                y: yValues,
-                type: 'scatter',
-                mode: 'lines',
-                name: 'Solution'
-            };
-
-            const layout = {
-                title: 'First Order Differential Equation Solution',
-                xaxis: { title: 't' },
-                yaxis: { title: 'y' }
-            };
-
-            Plotly.newPlot(plotContainer, [trace], layout);
-        }
-    </script>
-
+        </script>
+    </section>
+    <section id="secondorder" class="section mt-3">
     <h1>Second Order Differential Equation Solver</h1>
     <table align="center" width="75%" cellpadding="0" cellspacing="0" border="0">
         <tr>
@@ -188,6 +218,16 @@
             Plotly.newPlot(plotContainer, [trace], layout);
         }
     </script>
+    </section>
+
+    <!-- core  -->
+    <script src="assets/vendors/jquery/jquery-3.4.1.js"></script>
+    <script src="assets/vendors/bootstrap/bootstrap.bundle.js"></script>
+    <!-- bootstrap 3 affix -->
+	<script src="assets/vendors/bootstrap/bootstrap.affix.js"></script>
+
+    <!-- steller js -->
+    <script src="assets/js/steller.js"></script>
 
 </body>
 </html>
